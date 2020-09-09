@@ -126,9 +126,29 @@ module.exports = context => {
               console.log('Update IOS project deployment target to:', IOS_MIN_DEPLOYMENT_TARGET, 'for build configuration', buildConfig.name);
             }
 
-            if (xcodeProject.getBuildProperty('ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES', buildConfig.name) !== 'YES') {
-              xcodeProject.updateBuildProperty('ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES', 'YES', buildConfig.name);
-              console.log('Update IOS build setting ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to: YES', 'for build configuration', buildConfig.name);
+            if (
+              xcodeProject.getBuildProperty(
+                "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES",
+                buildConfig.name
+              ) !== "YES" &&
+              xcodeProject.getBuildProperty(
+                "PRODUCT_NAME",
+                buildConfig.name
+              ) === "$(TARGET_NAME)"
+            ) {
+              xcodeProject.updateBuildProperty(
+                "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES",
+                "YES",
+                buildConfig.name
+              );
+              console.log(
+                `[${xcodeProject.getBuildProperty(
+                  "PRODUCT_NAME",
+                  buildConfig.name
+                )}] Update IOS build setting ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES to: YES`,
+                "for build configuration",
+                buildConfig.name
+              );
             }
 
             if (xcodeProject.getBuildProperty('LD_RUNPATH_SEARCH_PATHS', buildConfig.name) !== '"@executable_path/Frameworks"') {
